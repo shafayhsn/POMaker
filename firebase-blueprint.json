@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "System user with role-based access control.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "merchandiser", "sourcing", "store", "accounts", "approver"] },
+        "department": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Supplier": {
+      "title": "Supplier",
+      "description": "Approved vendor for garment factory supplies.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "paymentTerms": { "type": "string" },
+        "taxId": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "approvedItems": { "type": "array" },
+        "address": { "type": "string" },
+        "contactPerson": { "type": "string" },
+        "email": { "type": "string", "format": "email" }
+      },
+      "required": ["name", "status"]
+    },
+    "Job": {
+      "title": "Active Job",
+      "description": "Current buyer order or style being produced.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "jobNumber": { "type": "string" },
+        "styleName": { "type": "string" },
+        "buyer": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "closed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["jobNumber", "styleName", "status"]
+    },
+    "PurchaseOrder": {
+      "title": "Purchase Order",
+      "description": "Digital PO issued to a supplier.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "poNumber": { "type": "string" },
+        "jobId": { "type": "string" },
+        "supplierId": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "submitted", "approved", "issued", "cancelled", "revised"] },
+        "issueDate": { "type": "string", "format": "date-time" },
+        "deliveryDate": { "type": "string", "format": "date-time" },
+        "deliveryPlace": { "type": "string" },
+        "items": { "type": "array" },
+        "totalAmount": { "type": "number" },
+        "currency": { "type": "string" },
+        "verificationCode": { "type": "string" },
+        "revisionNumber": { "type": "number" },
+        "printCount": { "type": "number" },
+        "createdBy": { "type": "string" },
+        "approvedBy": { "type": "string" },
+        "auditTrail": { "type": "array" }
+      },
+      "required": ["poNumber", "jobId", "supplierId", "status", "verificationCode"]
+    },
+    "AuditLog": {
+      "title": "Audit Log",
+      "description": "Record of every action taken in the system.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "userId": { "type": "string" },
+        "action": { "type": "string" },
+        "entityType": { "type": "string" },
+        "entityId": { "type": "string" },
+        "details": { "type": "string" },
+        "ipAddress": { "type": "string" }
+      },
+      "required": ["timestamp", "userId", "action"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles and roles."
+    },
+    "/suppliers/{supplierId}": {
+      "schema": "Supplier",
+      "description": "Supplier master data."
+    },
+    "/jobs/{jobId}": {
+      "schema": "Job",
+      "description": "Active production jobs."
+    },
+    "/purchaseOrders/{poId}": {
+      "schema": "PurchaseOrder",
+      "description": "Purchase orders and their history."
+    },
+    "/auditLogs/{logId}": {
+      "schema": "AuditLog",
+      "description": "System-wide audit trail."
+    },
+    "/settings/config": {
+      "schema": "object",
+      "description": "Global system settings."
+    }
+  }
+}
